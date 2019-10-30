@@ -17,8 +17,6 @@ buildscript {
 }
 apply plugin: 'kotlin'
 apply plugin: "kotlin-spring"
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 apply plugin: 'kotlin-kapt'
 group = GROUP
 version = VERSION
@@ -31,19 +29,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation("org.springframework.boot:spring-boot-configuration-processor")
-    kapt 'org.springframework.boot:spring-boot-configuration-processor'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-
-    implementation 'com.alibaba:fastjson:1.2.58'
+    implementation "org.springframework.boot:spring-boot-starter-websocket:${SPRINGBOOT_VERSION}"
+    implementation("org.springframework.boot:spring-boot-configuration-processor:${SPRINGBOOT_VERSION}")
+    kapt "org.springframework.boot:spring-boot-configuration-processor:${SPRINGBOOT_VERSION}"
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
 }
 
 compileKotlin {
@@ -61,7 +51,7 @@ mavenPublish {
     name = 'hulk' //选填
     description = 'hulk websocket' //选填
     developerId = "websocket" //选填
-    developerName = "Frank" //选填
+    developerName = "frank" //选填
 
     targets {
         uploadArchives {

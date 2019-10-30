@@ -35,6 +35,11 @@ interface Session {
     fun <T> getAttr(key: Any): T
 
     /**
+     * 设置参数
+     */
+    fun setAttr(key: Any, value: Any)
+
+    /**
      * 发送消息
      */
     fun send(binaryMessage: BinaryMessage)

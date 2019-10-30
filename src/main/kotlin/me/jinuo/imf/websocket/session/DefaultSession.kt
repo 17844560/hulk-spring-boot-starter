@@ -62,6 +62,11 @@ class DefaultSession : Session {
         return attr[key] as T
     }
 
+    override fun setAttr(key: Any, value: Any) {
+        require(!attr.containsKey(key)) { "KEY[${key}]已存在" }
+        attr.put(key, value)
+    }
+
     override fun send(message: Message) {
         val codec = dispatcher.getCodec()
         val send = codec.encode(message)
@@ -85,7 +90,12 @@ class DefaultSession : Session {
     }
 
     override fun send(binaryMessage: BinaryMessage) {
-        session.sendMessage(binaryMessage)
+        if (session.isOpen) {
+            try {
+                session.sendMessage(binaryMessage)
+            } catch (e: IllegalStateException) {
+            }
+        }
     }
 
     override fun lastTime(): Long {

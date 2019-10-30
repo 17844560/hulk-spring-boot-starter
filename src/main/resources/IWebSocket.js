@@ -1,13 +1,19 @@
-function IWebSocket() {
+export function IWebSocket() {
+    var ws;
     ws = null;
     //注册的指令对应的回调函数
+    var receivers;
     receivers = new Dictionary();
     //回调
+    var callbacks;
     callbacks = new Dictionary();
+    var url;
     url = "";
     //消息序号
+    var sn;
     sn = 0;
     //连接是否有效（未断开）
+    var active;
     active = false;
 
     /**
@@ -35,7 +41,7 @@ function IWebSocket() {
                 callback(message)
             }
         } else {
-            //服务器主动推送
+            //收到服务器主动推送
             var command = getCommand(message.header.module, message.header.cmd);
             var processor = receivers.get(command);
             if (processor) {
@@ -111,7 +117,7 @@ function getCommand(module, cmd) {
  * @returns {Array} int8Array
  */
 function encodeUtf8(msg) {
-    encoder = new TextEncoder('utf8');
+    var encoder = new TextEncoder('utf8');
     var array = encoder.encode(msg);
     var buffer = array.buffer;
     return new Int8Array(buffer);
@@ -123,7 +129,7 @@ function encodeUtf8(msg) {
  * @returns {string}
  */
 function decodeUtf8(byteArray) {
-    decoder = new TextDecoder('utf8');
+    var decoder = new TextDecoder('utf8');
     return decoder.decode(byteArray)
 }
 
@@ -249,8 +255,7 @@ Header.valueOf = function (sn, state, module, cmd) {
         module: module,
         cmd: cmd,
         hasState: function (check) {
-            var re = state & check;
-            return re === check
+            return state & check === check
         }
     }
 };
@@ -260,8 +265,9 @@ Header.valueOf = function (sn, state, module, cmd) {
  * @type {{valueOf: (function(*, *)), header: null, body: null}}
  */
 function Message() {
+    var header;
     header = null;
-    body = null;
+    var body = null;
 }
 
 Message.valueOf = function (header, body) {
