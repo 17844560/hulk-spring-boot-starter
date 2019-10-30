@@ -1,3 +1,2 @@
-rootProject.name = 'websocket-spring-boot-starter'
-include 'test'
+rootProject.name = 'hulk-spring-boot-starter'
 

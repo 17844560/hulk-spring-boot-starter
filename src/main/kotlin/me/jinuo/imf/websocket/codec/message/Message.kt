@@ -15,7 +15,7 @@ class Message {
 
     lateinit var header: Header
     lateinit var body: ByteArray
-    lateinit var bodyJson: String
+    var bodyJson: String = ""
 
 
     fun getCommand(): Command {

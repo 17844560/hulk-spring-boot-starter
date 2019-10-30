@@ -25,7 +25,7 @@ class WebSocketConfiguration : WebSocketConfigurer, ImportAware {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
         val attr = annotationMetadata.getAnnotationAttributes(EnableWebSocket::class.java.name)
         val path = attr!!["value"].toString()
-        registry.addHandler(defaultWebSocketHandler, path)
+        registry.addHandler(defaultWebSocketHandler, path).setAllowedOrigins("*")
     }
 
 }

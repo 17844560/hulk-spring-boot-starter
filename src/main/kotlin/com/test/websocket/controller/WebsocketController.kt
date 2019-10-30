@@ -16,7 +16,7 @@ class WebsocketController {
 
 
     @WSMapping(0)
-    fun test1(session: Session, callback: ResultCallback, body: String): String {
+    fun test1(session: Session, body: String): String {
         println("test1收到消息：$body")
         return "服务器回复消息"
     }

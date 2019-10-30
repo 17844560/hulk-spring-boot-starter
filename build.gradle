@@ -11,16 +11,17 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${SPRINGBOOT_VERSION}")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$KOTLIN_VERSION"
+        classpath 'me.jinuo.imf:librarian-plugin:1.0.0'
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.0"
     }
 }
-
 apply plugin: 'kotlin'
 apply plugin: "kotlin-spring"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'kotlin-kapt'
-group = 'com.jinuo'
-version = '0.0.1-SNAPSHOT'
+group = GROUP
+version = VERSION
 sourceCompatibility = '1.8'
 
 
@@ -50,4 +51,21 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+apply plugin: 'librarian'
+mavenPublish {
+    group = GROUP //选填 默认为项目group
+    version = VERSION//选填 默认为项目version
+    artifactId = 'hulk-spring-boot-starter' //选填 默认为项目名
+    name = 'hulk' //选填
+    description = 'hulk websocket' //选填
+    developerId = "websocket" //选填
+    developerName = "Frank" //选填
+
+    targets {
+        uploadArchives {
+            signing = false //选填
+        }
+    }
 }
