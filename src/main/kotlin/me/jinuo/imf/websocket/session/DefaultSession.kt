@@ -120,4 +120,8 @@ class DefaultSession : Session {
         }
     }
 
+    override fun getWebSocketSession(): WebSocketSession {
+        return session
+    }
+
 }

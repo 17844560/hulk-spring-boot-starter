@@ -3,6 +3,7 @@ package me.jinuo.imf.websocket.session
 import me.jinuo.imf.websocket.codec.message.Message
 import me.jinuo.imf.websocket.definition.Command
 import org.springframework.web.socket.BinaryMessage
+import org.springframework.web.socket.WebSocketSession
 import java.net.InetSocketAddress
 
 /**
@@ -80,5 +81,10 @@ interface Session {
      * 关闭当前通信会话
      */
     fun close()
+
+    /**
+     * 获取原生session
+     */
+    fun getWebSocketSession(): WebSocketSession
 
 }
