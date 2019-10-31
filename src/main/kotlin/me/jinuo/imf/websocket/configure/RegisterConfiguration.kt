@@ -1,9 +1,13 @@
 package me.jinuo.imf.websocket.configure
 
+import me.jinuo.imf.websocket.anno.EnableWebSocket
+import me.jinuo.imf.websocket.client.ClientFactory
 import me.jinuo.imf.websocket.codec.BinaryCodec
 import me.jinuo.imf.websocket.factory.RegisterFactory
 import me.jinuo.imf.websocket.handler.DefaultDispatcher
 import me.jinuo.imf.websocket.handler.DefaultWebSocketHandler
+import me.jinuo.imf.websocket.handler.ProxyWebSocketHandler
+import me.jinuo.imf.websocket.handler.TargetWebSocketHandler
 import me.jinuo.imf.websocket.parameter.impl.*
 import me.jinuo.imf.websocket.session.DefaultSessionManager
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
@@ -29,6 +33,22 @@ class RegisterConfiguration : ImportBeanDefinitionRegistrar {
         registerRegisterFactory(registry)
         //注册handler
         registerWebSocketHandler(registry)
+        //注册代理相关配置
+        registryProxy(meta, registry)
+    }
+
+    private fun registryProxy(meta: AnnotationMetadata, registry: BeanDefinitionRegistry) {
+        val attr = meta.getAnnotationAttributes(EnableWebSocket::class.java.name)
+        val proxy = attr!!["proxy"] as Boolean
+        if (!proxy) {
+            return
+        }
+        val targetHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(TargetWebSocketHandler::class.java)
+        registry.registerBeanDefinition("targetWebSocketHandler", targetHandlerBuilder.beanDefinition)
+        val clientFactoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(ClientFactory::class.java)
+        registry.registerBeanDefinition("clientFactory", clientFactoryBuilder.beanDefinition)
+        val proxyHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(ProxyWebSocketHandler::class.java)
+        registry.registerBeanDefinition("proxyWebSocketHandler", proxyHandlerBuilder.beanDefinition)
     }
 
     /**

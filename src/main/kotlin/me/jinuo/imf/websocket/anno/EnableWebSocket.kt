@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Import
 @MustBeDocumented
 annotation
 @Import(RegisterConfiguration::class, WebSocketConfiguration::class)
-class EnableWebSocket(val value: String = "/ws")
+class EnableWebSocket(val value: String = "/ws", val proxy: Boolean = false)
 

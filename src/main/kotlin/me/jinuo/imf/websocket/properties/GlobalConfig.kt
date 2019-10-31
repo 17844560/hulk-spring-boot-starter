@@ -12,4 +12,9 @@ data class GlobalConfig(
         /** 是否开启心跳*/
         var heartbeat: Boolean = false,
         /** 会话超时时间(毫秒)*/
-        var timeout: Long = 10 * 60 * 1000)
+        var timeout: Long = 10 * 60 * 1000,
+        /** 代理目标服务器ip*/
+        var proxyHost: String = "",
+        /** 代理目标服务器端口*/
+        var proxyPort: Int = 0)
+
