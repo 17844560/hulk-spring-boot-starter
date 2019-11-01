@@ -1,5 +1,7 @@
 package me.jinuo.imf.websocket.session
 
+import me.jinuo.imf.websocket.codec.message.Message
+import me.jinuo.imf.websocket.definition.Command
 import me.jinuo.imf.websocket.event.KickEvent
 import me.jinuo.imf.websocket.event.TimeoutEvent
 import me.jinuo.imf.websocket.handler.DefaultDispatcher
@@ -25,20 +27,24 @@ import javax.annotation.Resource
  **/
 @EnableConfigurationProperties(GlobalConfig::class)
 class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
-
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     /** SessionID 生成序列*/
     private val sequence = AtomicLong(0x00FFFF00L)
+
     /** 消息序号生成器*/
     private val snGenerator = SnGenerator()
+
     @Resource
     private lateinit var dispatcher: DefaultDispatcher
+
     @Resource
     private lateinit var applicationContext: ApplicationContext
+
     @Resource
     private lateinit var globalConfig: GlobalConfig
-    /** SESSION 列表(包含匿名会话和已经鉴别身份的)  */
+
+    /** SESSION 列表(包含匿名会话和已经鉴别身份的会话)  */
     private val sessions = ConcurrentHashMap<Long, Session>(INIT_SIZE)
 
     /** 已经鉴别用户身份的会话，Key:用户身份标识，Value:[Session]  */
@@ -46,6 +52,7 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
 
     /** 匿名会话，Key:[Session.getId]，Value:[Session]  */
     private val anonymous = ConcurrentHashMap<Long, Session>()
+
     /** 超时删除队列*/
     private var removeQueue = DelayQueue<DelayedElement<Long>>()
 
@@ -55,7 +62,7 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
             while (true) {
                 val element = removeQueue.take()
                 val sid = element.content
-                val session = getSession(sid)
+                val session = findSession(sid)
                 session ?: continue
                 val now = element.end.getTime()
                 if (now - globalConfig.timeout >= session.lastTime()) {
@@ -68,7 +75,8 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
                     addDelayQueue(sid, Date(System.currentTimeMillis() + session.lastTime() + globalConfig.timeout))
                 }
             }
-        }, "SESSION守护线程")
+        }, "SESSION_MANAGER:守护线程")
+        thread.setDaemon(true)
         thread.start()
     }
 
@@ -84,7 +92,7 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
         private val INIT_SIZE = 4096
     }
 
-    override fun getSession(): Collection<Session> {
+    override fun allSessions(): Collection<Session> {
         return sessions.values
     }
 
@@ -108,8 +116,8 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
         return session
     }
 
-    override fun getSession(id: Long): Session? {
-        return sessions[id]
+    override fun findSession(sessionId: Long): Session? {
+        return sessions[sessionId]
     }
 
     override fun destroySession(session: Session) {
@@ -162,5 +170,58 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
         }
         session.setIdentity(identity)
         identities.put(identity, session)
+        anonymous.remove(session.getId())
     }
+
+    override fun getSession(identity: Any): Session? {
+        return identities[identity]
+    }
+
+    override fun getSessions(): Collection<Session> {
+        return identities.values
+    }
+
+
+    override fun push(message: Message, vararg identity: Any) {
+        for (id in identity) {
+            val session = getSession(id)
+            session ?: continue
+            session.send(message)
+        }
+    }
+
+    override fun push(message: Message, vararg sessions: Session) {
+        for (session in sessions) {
+            session.send(message)
+        }
+    }
+
+    override fun pushAllIdentified(message: Message) {
+        val sessions = getSessions()
+        for (session in sessions) {
+            session.send(message)
+        }
+    }
+
+    override fun push(command: Command, message: Any, vararg identity: Any) {
+        for (id in identity) {
+            val session = getSession(id)
+            session ?: continue
+            session.send(command, message)
+        }
+    }
+
+    override fun push(command: Command, message: Any, vararg sessions: Session) {
+        for (session in sessions) {
+            session.send(command, message)
+        }
+    }
+
+    override fun pushAllIdentified(command: Command, message: Any) {
+        val sessions = getSessions()
+        for (session in sessions) {
+            session.send(command, message)
+        }
+    }
+
 }
