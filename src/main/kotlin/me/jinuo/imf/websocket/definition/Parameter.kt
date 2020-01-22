@@ -13,6 +13,7 @@ abstract class Parameter<T> {
     abstract fun getValue(meta: ArgMeta<T>, session: Session, message: Message, callback: ResultCallback): Any?
 
     fun getV(meta: ArgMeta<*>, session: Session, message: Message, callback: ResultCallback): Any? {
+        @Suppress("UNCHECKED_CAST")
         return getValue(meta as ArgMeta<T>, session, message, callback)
     }
 

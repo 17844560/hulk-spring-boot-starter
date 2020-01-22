@@ -59,6 +59,7 @@ class DefaultSession : Session {
     }
 
     override fun <T> getAttr(key: Any): T {
+        @Suppress("UNCHECKED_CAST")
         return attr[key] as T
     }
 

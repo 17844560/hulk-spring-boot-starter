@@ -17,6 +17,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar
 import org.springframework.core.type.AnnotationMetadata
 
 @Configuration
+@Suppress("UNUSED_PARAMETER")
 class RegisterConfiguration : ImportBeanDefinitionRegistrar {
 
 

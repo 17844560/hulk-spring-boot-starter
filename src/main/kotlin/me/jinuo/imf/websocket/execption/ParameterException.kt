@@ -7,4 +7,4 @@ import java.lang.RuntimeException
  * @date 2019-10-25 11:44
  * @desc
  **/
-class ParameterException(message: String) : RuntimeException()
+class ParameterException(message: String) : RuntimeException(message)

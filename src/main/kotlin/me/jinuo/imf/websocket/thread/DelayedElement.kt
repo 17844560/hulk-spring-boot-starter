@@ -34,6 +34,7 @@ class DelayedElement<T>(
         return delay
     }
 
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun compareTo(o: Delayed): Int {
         val delay1 = this.getDelay(TimeUnit.MILLISECONDS)
         val delay2 = o.getDelay(TimeUnit.MILLISECONDS)
@@ -56,6 +57,7 @@ class DelayedElement<T>(
         return result
     }
 
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun equals(obj: Any?): Boolean {
         if (this === obj)
             return true

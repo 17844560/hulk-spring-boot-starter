@@ -44,18 +44,18 @@ class RandomUtils private constructor() {
          * @return
          */
         fun betweenInt(min: Int, max: Int, include: Boolean): Int {
-            var min = min
-            var max = max
+            var copyMin = min
+            var copyMax = max
             // 参数检查
-            require(min <= max) { "最小值[$min]不能大于最大值[$max]" }
-            require(!(!include && min == max)) { "不包括边界值时最小值[$min]不能等于最大值[$max]" }
+            require(copyMin <= copyMax) { "最小值[$copyMin]不能大于最大值[$copyMax]" }
+            require(!(!include && copyMin == copyMax)) { "不包括边界值时最小值[$copyMin]不能等于最大值[$copyMax]" }
             // 修正边界值
             if (include) {
-                max++
+                copyMax++
             } else {
-                min++
+                copyMin++
             }
-            return (min + Math.random() * (max - min)).toInt()
+            return (copyMin + Math.random() * (copyMax - copyMin)).toInt()
         }
 
         /**

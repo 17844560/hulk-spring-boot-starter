@@ -16,10 +16,11 @@ import me.jinuo.imf.websocket.session.Session
 class BodyParameterImpl : Parameter<Body>() {
 
     override fun getValue(meta: ArgMeta<Body>, session: Session, message: Message, callback: ResultCallback): Any {
-        return if (meta.type.equals(String::class.java)) {
-            message.bodyJson as Any
+        val result: Any = if (meta.type.equals(String::class.java)) {
+            message.bodyJson
         } else {
             DefaultDispatcher.mapper.readValue(message.bodyJson, DefaultDispatcher.typeFactory.constructType(meta.type))
         }
+        return result
     }
 }
