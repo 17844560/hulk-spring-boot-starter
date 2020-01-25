@@ -74,5 +74,9 @@ interface SessionManager<S, T : Session> {
     fun push(command: Command, message: Any, vararg sessions: T)
 
     fun pushAllIdentified(command: Command, message: Any)
+
+    fun pushAnonymous(command: Command, message: Any)
+
+    fun pushAnonymous(message: Message)
     //推送消息---end-----
 }

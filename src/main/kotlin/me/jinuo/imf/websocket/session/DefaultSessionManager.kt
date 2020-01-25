@@ -224,4 +224,16 @@ class DefaultSessionManager : SessionManager<WebSocketSession, Session> {
         }
     }
 
+    override fun pushAnonymous(command: Command, message: Any) {
+        for (session in anonymous.values) {
+            session.send(command, message)
+        }
+    }
+
+    override fun pushAnonymous(message: Message) {
+        for (session in anonymous.values) {
+            session.send(message)
+        }
+    }
+
 }
