@@ -16,6 +16,7 @@ interface Dispatcher {
      */
     fun receiver(session: Session, binaryMessage: BinaryMessage)
 
+    fun receiver(session: Session, message: Message)
     /**
      * 向客户端发送消息
      */

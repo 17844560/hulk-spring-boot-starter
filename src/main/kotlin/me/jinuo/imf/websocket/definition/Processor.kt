@@ -5,6 +5,6 @@ import me.jinuo.imf.websocket.session.Session
 
 interface Processor {
 
-    fun process(session: Session, message: Message, callback: ResultCallback)
+    fun process(session: Session, message: Message, callback: ResultCallback<Any?>)
 
 }

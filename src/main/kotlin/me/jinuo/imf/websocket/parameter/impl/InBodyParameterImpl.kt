@@ -16,9 +16,9 @@ import me.jinuo.imf.websocket.session.Session
  * @desc
  **/
 
-class InBodyParameterImpl : Parameter<InBody>() {
+class InBodyParameterImpl : Parameter<InBody> {
 
-    override fun getValue(meta: ArgMeta<InBody>, session: Session, message: Message, callback: ResultCallback): Any? {
+    override fun getValue(meta: ArgMeta<InBody>, session: Session, message: Message, callback: ResultCallback<Any?>): Any? {
         try {
             val map = DefaultDispatcher.mapper.readValue(message.bodyJson, Map::class.java)
             val body = meta.body

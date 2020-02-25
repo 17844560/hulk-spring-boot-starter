@@ -14,13 +14,17 @@ import org.springframework.context.ApplicationContextAware
 import java.lang.reflect.ParameterizedType
 import javax.annotation.PostConstruct
 
+@Suppress("UNCHECKED_CAST")
 class RegisterFactory : FactoryBean<CommandRegister>, BeanPostProcessor, ApplicationContextAware {
 
     private lateinit var applicationContext: ApplicationContext
 
     private var register: CommandRegister? = null
 
-    private var parameters = HashMap<String, Parameter<*>>()
+    private var parameters = HashMap<String, Parameter<Any?>>()
+
+    private var init = false
+    private var postProcessAfterInitialization = false
 
     override fun getObjectType(): Class<*> {
         return CommandRegister::class.java
@@ -28,18 +32,22 @@ class RegisterFactory : FactoryBean<CommandRegister>, BeanPostProcessor, Applica
 
     @PostConstruct
     fun initializer() {
+        if (init) {
+            return
+        }
+        init = true
         val parameters = applicationContext.getBeansOfType(Parameter::class.java)
         for (entry in parameters) {
             val target = entry.value
-//            val types = target::class.java.genericInterfaces
-//            if (types.size > 1) {
-//                throw ParameterException("参数处理器只支持实现一个接口")
-//            }
-//            val type = types[0]
-            val type = target::class.java.genericSuperclass
+            val types = target::class.java.genericInterfaces
+            if (types.size > 1) {
+                throw ParameterException("参数处理器只支持实现一个接口[Parameter]")
+            }
+            val type = types[0]
+//            val type = target::class.java.genericSuperclass
             if (type is ParameterizedType) {
                 val clz = type.actualTypeArguments[0]
-                if (this.parameters.putIfAbsent(clz.typeName, target) != null) {
+                if (this.parameters.putIfAbsent(clz.typeName, target as Parameter<Any?>) != null) {
                     throw ParameterException("参数处理器[$type]重复")
                 }
             }
@@ -52,6 +60,10 @@ class RegisterFactory : FactoryBean<CommandRegister>, BeanPostProcessor, Applica
     }
 
     override fun postProcessAfterInitialization(bean: Any, beanName: String): Any {
+        if (postProcessAfterInitialization) {
+            return bean
+        }
+        postProcessAfterInitialization = true
         val controller = bean::class.java.getAnnotation(WSController::class.java) ?: return bean
         //模块
         val module = controller.value

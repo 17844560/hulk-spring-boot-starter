@@ -37,6 +37,10 @@ class DefaultDispatcher : Dispatcher {
     override fun receiver(session: Session, binaryMessage: BinaryMessage) {
         val message = decode(binaryMessage)
         message ?: return
+        receiver(session, message)
+    }
+
+    override fun receiver(session: Session, message: Message) {
         //更新收包时间
         session.setLastTime(System.currentTimeMillis())
         val command = message.getCommand()
@@ -45,7 +49,7 @@ class DefaultDispatcher : Dispatcher {
             logger.error("指令[{}]定义信息不存在！", command)
             throw CommandException("指令[$command]定义信息不存在！")
         }
-        //向客户端回复消息
+        //回复消息
         val callback = DefaultResultCallback.valueOf(session, message, this)
         processor.process(session, message, callback)
     }

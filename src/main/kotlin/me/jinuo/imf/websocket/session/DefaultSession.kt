@@ -9,6 +9,7 @@ import org.springframework.web.socket.BinaryMessage
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.WebSocketSession
 import java.net.InetSocketAddress
+import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -58,7 +59,8 @@ class DefaultSession : Session {
         this.identity = identity
     }
 
-    override fun <T> getAttr(key: Any): T {
+    override fun <T> getAttr(key: Any): T? {
+        attr[key] ?: return null
         @Suppress("UNCHECKED_CAST")
         return attr[key] as T
     }
@@ -123,6 +125,10 @@ class DefaultSession : Session {
 
     override fun getWebSocketSession(): WebSocketSession {
         return session
+    }
+
+    override fun getUri(): URI? {
+        return session.uri
     }
 
 }

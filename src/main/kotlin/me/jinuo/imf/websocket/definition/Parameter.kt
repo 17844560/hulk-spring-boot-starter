@@ -8,11 +8,11 @@ import me.jinuo.imf.websocket.session.Session
  * @date 2019-10-25 10:36
  * @desc
  **/
-abstract class Parameter<T> {
+interface Parameter<T> {
 
-    abstract fun getValue(meta: ArgMeta<T>, session: Session, message: Message, callback: ResultCallback): Any?
+    fun getValue(meta: ArgMeta<T>, session: Session, message: Message, callback: ResultCallback<Any?>): Any?
 
-    fun getV(meta: ArgMeta<*>, session: Session, message: Message, callback: ResultCallback): Any? {
+    fun getV(meta: ArgMeta<*>, session: Session, message: Message, callback: ResultCallback<Any?>): Any? {
         @Suppress("UNCHECKED_CAST")
         return getValue(meta as ArgMeta<T>, session, message, callback)
     }

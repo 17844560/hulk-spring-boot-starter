@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.web.socket.BinaryMessage
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.WebSocketSession
+import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.handler.BinaryWebSocketHandler
 import javax.annotation.Resource
 
@@ -32,7 +33,7 @@ class ProxyWebSocketHandler : BinaryWebSocketHandler() {
     override fun afterConnectionEstablished(session: WebSocketSession) {
         val targetUrl = "ws://" + globalConfig.proxyHost + ":" + globalConfig.proxyPort + session.uri!!.query
         logger.debug("开始连接代理服务器[{}]", targetUrl)
-        val target = clientFactory.getConn(targetUrl)
+        val target = getConn(targetUrl)
         if (target == null || !target.isOpen) {
             logger.debug("代理服务器[{}]连接失败", targetUrl)
             session.close()
@@ -65,4 +66,17 @@ class ProxyWebSocketHandler : BinaryWebSocketHandler() {
         super.afterConnectionClosed(session, status)
     }
 
+    @Resource
+    private lateinit var targetWebSocketHandler: TargetWebSocketHandler
+
+    private fun getConn(url: String): WebSocketSession? {
+        val client = StandardWebSocketClient()
+        val future = client.doHandshake(targetWebSocketHandler, url)
+        try {
+            return future.get()
+        } catch (e: Exception) {
+            logger.error("连接游戏服务器[{}]失败,发生未知错误[{}]", url, e.message)
+            throw e
+        }
+    }
 }

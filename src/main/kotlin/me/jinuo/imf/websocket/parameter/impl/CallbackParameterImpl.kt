@@ -13,9 +13,9 @@ import me.jinuo.imf.websocket.session.Session
  * @date 2019-10-25 14:40
  * @desc
  **/
-class CallbackParameterImpl : Parameter<Callback>() {
+class CallbackParameterImpl : Parameter<Callback> {
 
-    override fun getValue(meta: ArgMeta<Callback>, session: Session, message: Message, callback: ResultCallback): Any {
+    override fun getValue(meta: ArgMeta<Callback>, session: Session, message: Message, callback: ResultCallback<Any?>): Any {
         return callback
     }
 }

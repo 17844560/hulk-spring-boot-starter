@@ -13,9 +13,9 @@ import me.jinuo.imf.websocket.session.Session
  * @date 2019-10-25 10:58
  * @desc [Session.getAttr]参数
  **/
-class InSessionParameterImpl : Parameter<InSession>() {
+class InSessionParameterImpl : Parameter<InSession> {
 
-    override fun getValue(meta: ArgMeta<InSession>, session: Session, message: Message, callback: ResultCallback): Any? {
+    override fun getValue(meta: ArgMeta<InSession>, session: Session, message: Message, callback: ResultCallback<Any?>): Any? {
         val inSession = meta.body
         val value = if (inSession.value.equals(Session.IDENTITY)) {
             session.getIdentity()

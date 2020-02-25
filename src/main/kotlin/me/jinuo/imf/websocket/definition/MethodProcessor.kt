@@ -15,7 +15,7 @@ class MethodProcessor : Processor {
 
     companion object {
         //构造方法
-        fun valueOf(target: Any, method: Method, name2Parameters: Map<String, Parameter<*>>): MethodProcessor {
+        fun valueOf(target: Any, method: Method, name2Parameters: Map<String, Parameter<Any?>>): MethodProcessor {
             val methodProcessor = MethodProcessor()
             methodProcessor.definition = MethodDefinition.valueOf(target::class.java, method, name2Parameters)
             methodProcessor.target = target
@@ -24,7 +24,7 @@ class MethodProcessor : Processor {
         }
     }
 
-    override fun process(session: Session, message: Message, callback: ResultCallback) {
+    override fun process(session: Session, message: Message, callback: ResultCallback<Any?>) {
         val args = definition.resolveArg(session, message, callback)
         try {
             val back = method.invoke(target, *args)

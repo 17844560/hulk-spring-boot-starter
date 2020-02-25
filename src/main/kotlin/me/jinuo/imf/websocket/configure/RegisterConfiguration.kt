@@ -1,7 +1,6 @@
 package me.jinuo.imf.websocket.configure
 
 import me.jinuo.imf.websocket.anno.EnableWebSocket
-import me.jinuo.imf.websocket.client.ClientFactory
 import me.jinuo.imf.websocket.codec.BinaryCodec
 import me.jinuo.imf.websocket.factory.RegisterFactory
 import me.jinuo.imf.websocket.handler.DefaultDispatcher
@@ -44,72 +43,90 @@ class RegisterConfiguration : ImportBeanDefinitionRegistrar {
         if (!proxy) {
             return
         }
-        val targetHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(TargetWebSocketHandler::class.java)
-        registry.registerBeanDefinition("targetWebSocketHandler", targetHandlerBuilder.beanDefinition)
-        val clientFactoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(ClientFactory::class.java)
-        registry.registerBeanDefinition("clientFactory", clientFactoryBuilder.beanDefinition)
-        val proxyHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(ProxyWebSocketHandler::class.java)
-        registry.registerBeanDefinition("proxyWebSocketHandler", proxyHandlerBuilder.beanDefinition)
+        if (!registry.containsBeanDefinition("targetWebSocketHandler")) {
+            val targetHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(TargetWebSocketHandler::class.java)
+            registry.registerBeanDefinition("targetWebSocketHandler", targetHandlerBuilder.beanDefinition)
+        }
+        if (!registry.containsBeanDefinition("proxyWebSocketHandler")) {
+            val proxyHandlerBuilder = BeanDefinitionBuilder.genericBeanDefinition(ProxyWebSocketHandler::class.java)
+            registry.registerBeanDefinition("proxyWebSocketHandler", proxyHandlerBuilder.beanDefinition)
+        }
     }
 
     /**
      * 注册webSocket处理器
      */
     private fun registerWebSocketHandler(registry: BeanDefinitionRegistry) {
-        val builder = BeanDefinitionBuilder.genericBeanDefinition(DefaultWebSocketHandler::class.java)
-        registry.registerBeanDefinition("defaultWebSocketHandler", builder.beanDefinition)
+        if (!registry.containsBeanDefinition("defaultWebSocketHandler")) {
+            val builder = BeanDefinitionBuilder.genericBeanDefinition(DefaultWebSocketHandler::class.java)
+            registry.registerBeanDefinition("defaultWebSocketHandler", builder.beanDefinition)
+        }
     }
 
     /**
      * 注册指令工厂
      */
     private fun registerRegisterFactory(registry: BeanDefinitionRegistry) {
-        val registerFactoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(RegisterFactory::class.java)
-        registry.registerBeanDefinition("registerFactory", registerFactoryBuilder.beanDefinition)
+        if (!registry.containsBeanDefinition("registerFactory")) {
+            val registerFactoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(RegisterFactory::class.java)
+            registry.registerBeanDefinition("registerFactory", registerFactoryBuilder.beanDefinition)
+        }
     }
 
     /**
      * 注册指令分发器
      */
     private fun registerDispatcher(meta: AnnotationMetadata, registry: BeanDefinitionRegistry) {
-        val defaultDispatcherBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultDispatcher::class.java)
-        registry.registerBeanDefinition("defaultDispatcher", defaultDispatcherBuilder.beanDefinition)
+        if (!registry.containsBeanDefinition("defaultDispatcher")) {
+            val defaultDispatcherBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultDispatcher::class.java)
+            registry.registerBeanDefinition("defaultDispatcher", defaultDispatcherBuilder.beanDefinition)
+        }
     }
 
     /**
      * 注册Session管理器
      */
     private fun registerSessionManager(meta: AnnotationMetadata, registry: BeanDefinitionRegistry) {
-        val sessionManagerBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultSessionManager::class.java)
-        registry.registerBeanDefinition("defaultSessionManager", sessionManagerBuilder.beanDefinition)
+        if (!registry.containsBeanDefinition("defaultSessionManager")) {
+            val sessionManagerBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultSessionManager::class.java)
+            registry.registerBeanDefinition("defaultSessionManager", sessionManagerBuilder.beanDefinition)
+        }
     }
 
     /**
      * 注册编解码器
      */
     private fun registerCodec(meta: AnnotationMetadata, registry: BeanDefinitionRegistry) {
-        val binaryCodecBuilder = BeanDefinitionBuilder.genericBeanDefinition(BinaryCodec::class.java)
-        registry.registerBeanDefinition("binaryCodec", binaryCodecBuilder.beanDefinition)
+        if (!registry.containsBeanDefinition("binaryCodec")) {
+            val binaryCodecBuilder = BeanDefinitionBuilder.genericBeanDefinition(BinaryCodec::class.java)
+            registry.registerBeanDefinition("binaryCodec", binaryCodecBuilder.beanDefinition)
+        }
     }
 
     /**
      * 注册参数处理器
      */
     private fun registerParameter(meta: AnnotationMetadata, registry: BeanDefinitionRegistry) {
-        val inSessionBuilder = BeanDefinitionBuilder.genericBeanDefinition(InSessionParameterImpl::class.java)
-        registry.registerBeanDefinition("inSessionParameterImpl", inSessionBuilder.beanDefinition)
-
-        val inBodyBuilder = BeanDefinitionBuilder.genericBeanDefinition(InBodyParameterImpl::class.java)
-        registry.registerBeanDefinition("inBodyParameterImpl", inBodyBuilder.beanDefinition)
-
-        val defaultBuilder = BeanDefinitionBuilder.genericBeanDefinition(BodyParameterImpl::class.java)
-        registry.registerBeanDefinition("defaultParameterImpl", defaultBuilder.beanDefinition)
-
-        val callbackBuilder = BeanDefinitionBuilder.genericBeanDefinition(CallbackParameterImpl::class.java)
-        registry.registerBeanDefinition("callbackParameterImpl", callbackBuilder.beanDefinition)
-
-        val sessionBuilder = BeanDefinitionBuilder.genericBeanDefinition(SessionParameterImpl::class.java)
-        registry.registerBeanDefinition("sessionParameterImpl", sessionBuilder.beanDefinition)
+        if (!registry.containsBeanDefinition("inSessionParameterImpl")) {
+            val inSessionBuilder = BeanDefinitionBuilder.genericBeanDefinition(InSessionParameterImpl::class.java)
+            registry.registerBeanDefinition("inSessionParameterImpl", inSessionBuilder.beanDefinition)
+        }
+        if (!registry.containsBeanDefinition("inBodyParameterImpl")) {
+            val inBodyBuilder = BeanDefinitionBuilder.genericBeanDefinition(InBodyParameterImpl::class.java)
+            registry.registerBeanDefinition("inBodyParameterImpl", inBodyBuilder.beanDefinition)
+        }
+        if (!registry.containsBeanDefinition("defaultParameterImpl")) {
+            val defaultBuilder = BeanDefinitionBuilder.genericBeanDefinition(BodyParameterImpl::class.java)
+            registry.registerBeanDefinition("defaultParameterImpl", defaultBuilder.beanDefinition)
+        }
+        if (!registry.containsBeanDefinition("callbackParameterImpl")) {
+            val callbackBuilder = BeanDefinitionBuilder.genericBeanDefinition(CallbackParameterImpl::class.java)
+            registry.registerBeanDefinition("callbackParameterImpl", callbackBuilder.beanDefinition)
+        }
+        if (!registry.containsBeanDefinition("sessionParameterImpl")) {
+            val sessionBuilder = BeanDefinitionBuilder.genericBeanDefinition(SessionParameterImpl::class.java)
+            registry.registerBeanDefinition("sessionParameterImpl", sessionBuilder.beanDefinition)
+        }
     }
 
     /*fun registerCommand(metadata: AnnotationMetadata, registry: BeanDefinitionRegistry) {

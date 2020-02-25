@@ -5,7 +5,6 @@ import me.jinuo.imf.websocket.execption.ParameterException
 import me.jinuo.imf.websocket.parameter.Body
 import me.jinuo.imf.websocket.parameter.Callback
 import me.jinuo.imf.websocket.parameter.ISession
-import me.jinuo.imf.websocket.parameter.impl.CallbackParameterImpl
 import me.jinuo.imf.websocket.session.Session
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
@@ -18,10 +17,10 @@ class MethodDefinition : TypeDefinition {
     private lateinit var clazz: Class<*>
     private lateinit var method: Method
     private var callback: Boolean = false
-    private lateinit var argMetas: Array<ArgMeta<*>?>
+    private lateinit var argMetas: Array<ArgMeta<Any?>?>
 
     companion object {
-        fun valueOf(clazz: Class<*>, method: Method, name2Parameters: Map<String, Parameter<*>>): TypeDefinition {
+        fun valueOf(clazz: Class<*>, method: Method, name2Parameters: Map<String, Parameter<Any?>>): TypeDefinition {
             val typeDefinition = MethodDefinition()
             typeDefinition.argMetas = buildParameters(method, name2Parameters)
             typeDefinition.clazz = clazz
@@ -31,13 +30,13 @@ class MethodDefinition : TypeDefinition {
         }
 
         /** 结果反回方式（return/callback）*/
-        private fun findCallbackExist(metas: Array<ArgMeta<*>?>): Boolean {
+        private fun findCallbackExist(metas: Array<ArgMeta<Any?>?>): Boolean {
             if (metas.size == 0) {
                 return false
             }
             for (i in metas.indices) {
                 val p = metas[i]
-                if (p?.parameter is CallbackParameterImpl) {
+                if (p!!.callback) {
                     return true
                 }
             }
@@ -50,16 +49,16 @@ class MethodDefinition : TypeDefinition {
          * @param method 方法
          * @return
          */
-        private fun buildParameters(method: Method, name2Parameters: Map<String, Parameter<*>>): Array<ArgMeta<*>?> {
+        private fun buildParameters(method: Method, name2Parameters: Map<String, Parameter<Any?>>): Array<ArgMeta<Any?>?> {
             val types = method.genericParameterTypes
-            val result = arrayOfNulls<ArgMeta<*>>(types.size)
+            val result = arrayOfNulls<ArgMeta<Any?>>(types.size)
             for (i in types.indices) {
                 result[i] = valueOf(method, i, name2Parameters)
             }
             return result
         }
 
-        private fun valueOf(method: Method, index: Int, name2Parameters: Map<String, Parameter<*>>): ArgMeta<*>? {
+        private fun valueOf(method: Method, index: Int, name2Parameters: Map<String, Parameter<Any?>>): ArgMeta<Any?> {
             require(index < method.genericParameterTypes.size) { "索引超过参数下标" }
             val type = method.genericParameterTypes[index]
 
@@ -68,13 +67,13 @@ class MethodDefinition : TypeDefinition {
                     || type is ParameterizedType
                     && ResultCallback::class.java.isAssignableFrom(type.rawType as Class<*>)
             if (callbackParameter) {
-                return name2Parameters[Callback::class.java.name]?.let { ArgMeta.valueOf(type, null, it) }
+                return (name2Parameters[Callback::class.java.name])!!.let { ArgMeta.valueOf(type, null, it, true) }
             }
             if (type is Class<*> && Session::class.java.isAssignableFrom(type)) {
-                return name2Parameters[ISession::class.java.name]?.let { ArgMeta.valueOf(type, null, it) }
+                return (name2Parameters[ISession::class.java.name])!!.let { ArgMeta.valueOf(type, null, it) }
             }
             val annotations = method.parameterAnnotations[index]
-            var parameter: Parameter<*>? = null
+            var parameter: Parameter<Any?>? = null
             var anno: Annotation? = null
             for (annotation in annotations) {
                 val name = annotation.annotationClass.qualifiedName
@@ -98,11 +97,11 @@ class MethodDefinition : TypeDefinition {
     /**
      * 解析方法参数
      */
-    override fun resolveArg(session: Session, message: Message, callback: ResultCallback): Array<Any?> {
+    override fun resolveArg(session: Session, message: Message, callback: ResultCallback<Any?>): Array<Any?> {
         val args = arrayOfNulls<Any?>(argMetas.size)
         for (index in argMetas.indices) {
             val meta = argMetas[index]
-            args[index] = meta?.parameter?.getV(meta, session, message, callback)
+            args[index] = meta?.parameter?.getValue(meta, session, message, callback)
         }
         return args
     }

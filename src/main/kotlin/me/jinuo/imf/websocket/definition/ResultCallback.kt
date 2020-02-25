@@ -5,6 +5,6 @@ package me.jinuo.imf.websocket.definition
  * @date 2019-10-25 14:47
  * @desc
  **/
-interface ResultCallback {
-    fun call(body: Any?)
+interface ResultCallback<T> {
+    fun call(body: T?)
 }

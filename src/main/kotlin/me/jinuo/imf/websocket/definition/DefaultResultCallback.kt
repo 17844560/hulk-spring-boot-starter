@@ -10,15 +10,15 @@ import me.jinuo.imf.websocket.session.Session
  * @date 2019-10-28 10:46
  * @desc 异步反回结果
  **/
-class DefaultResultCallback : ResultCallback {
+class  DefaultResultCallback<T> : ResultCallback<T> {
 
     lateinit var dispatcher: Dispatcher
     lateinit var session: Session
     lateinit var message: Message
 
     companion object {
-        fun valueOf(session: Session, message: Message, dispatcher: Dispatcher): ResultCallback {
-            val callback = DefaultResultCallback()
+        fun valueOf(session: Session, message: Message, dispatcher: Dispatcher): ResultCallback<Any?> {
+            val callback = DefaultResultCallback<Any?>()
             callback.dispatcher = dispatcher
             callback.session = session
             callback.message = message
@@ -26,7 +26,7 @@ class DefaultResultCallback : ResultCallback {
         }
     }
 
-    override fun call(body: Any?) {
+    override fun call(body: T?) {
         val header = message.header
         //这是一条回复消息
         header.addState(MessageState.RESPONSE.state)

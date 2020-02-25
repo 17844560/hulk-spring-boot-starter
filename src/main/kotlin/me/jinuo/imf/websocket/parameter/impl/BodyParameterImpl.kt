@@ -13,14 +13,14 @@ import me.jinuo.imf.websocket.session.Session
  * @date 2019-10-25 14:40
  * @desc
  **/
-class BodyParameterImpl : Parameter<Body>() {
+class BodyParameterImpl : Parameter<Body> {
 
-    override fun getValue(meta: ArgMeta<Body>, session: Session, message: Message, callback: ResultCallback): Any {
-        val result: Any = if (meta.type.equals(String::class.java)) {
-            message.bodyJson
+    override fun getValue(meta: ArgMeta<Body>, session: Session, message: Message, callback: ResultCallback<Any?>): Any {
+        return if (meta.type.equals(String::class.java)) {
+            @Suppress("USELESS_CAST")
+            message.bodyJson as Any
         } else {
             DefaultDispatcher.mapper.readValue(message.bodyJson, DefaultDispatcher.typeFactory.constructType(meta.type))
         }
-        return result
     }
 }

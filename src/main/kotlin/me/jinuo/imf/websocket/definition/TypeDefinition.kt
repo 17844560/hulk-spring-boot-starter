@@ -7,5 +7,5 @@ interface TypeDefinition {
 
     fun isCallback(): Boolean
 
-    fun resolveArg(session: Session, message: Message, callback: ResultCallback): Array<Any?>
+    fun resolveArg(session: Session, message: Message, callback: ResultCallback<Any?>): Array<Any?>
 }

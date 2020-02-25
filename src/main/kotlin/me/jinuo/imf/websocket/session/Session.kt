@@ -1,10 +1,12 @@
 package me.jinuo.imf.websocket.session
 
+import com.sun.jndi.toolkit.url.Uri
 import me.jinuo.imf.websocket.codec.message.Message
 import me.jinuo.imf.websocket.definition.Command
 import org.springframework.web.socket.BinaryMessage
 import org.springframework.web.socket.WebSocketSession
 import java.net.InetSocketAddress
+import java.net.URI
 
 /**
  * @author frank
@@ -14,8 +16,8 @@ import java.net.InetSocketAddress
 interface Session {
 
     companion object {
-        val SESSION_KEY = "SESSION_KEY"
-        val IDENTITY = "identity"
+        const val SESSION_KEY = "SESSION_KEY"
+        const val IDENTITY = "identity"
     }
 
     /**
@@ -33,7 +35,7 @@ interface Session {
     /**
      * 获取session参数
      */
-    fun <T> getAttr(key: Any): T
+    fun <T> getAttr(key: Any): T?
 
     /**
      * 设置参数
@@ -86,5 +88,7 @@ interface Session {
      * 获取原生session
      */
     fun getWebSocketSession(): WebSocketSession
+
+    fun getUri(): URI?
 
 }
