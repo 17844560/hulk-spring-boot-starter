@@ -1,5 +1,4 @@
 # hulk-spring-boot-starter
-# Loki
 
 ### 介绍
 基于RocketMq实现的事件发布订阅，主要用于微服务之前的事件传播，底层是使用spring的事件机制，支持注解@EventListener方式观察事件@EventListener
