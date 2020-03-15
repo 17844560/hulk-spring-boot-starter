@@ -4,14 +4,11 @@ buildscript {
         jcenter()
         maven { url "http://repo.spring.io/plugins-release" }
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url 'http://maven.jinuo.me/repository/jinuo/' }
-        maven { url 'http://maven.jinuo.me/repository/jinuo-snapshot/' }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${SPRINGBOOT_VERSION}")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$KOTLIN_VERSION"
-        classpath 'me.jinuo.imf:librarian-plugin:1.0.0'
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.0"
     }
 }
@@ -41,21 +38,4 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-apply plugin: 'librarian'
-mavenPublish {
-    group = GROUP //选填 默认为项目group
-    version = VERSION//选填 默认为项目version
-    artifactId = 'hulk-spring-boot-starter' //选填 默认为项目名
-    name = 'hulk' //选填
-    description = 'hulk websocket' //选填
-    developerId = "websocket" //选填
-    developerName = "frank" //选填
-
-    targets {
-        uploadArchives {
-            signing = false //选填
-        }
-    }
 }
