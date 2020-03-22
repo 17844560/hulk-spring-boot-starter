@@ -2,6 +2,8 @@ package me.jinuo.imf.websocket.configure
 
 import me.jinuo.imf.websocket.anno.EnableWebSocket
 import me.jinuo.imf.websocket.codec.BinaryCodec
+import me.jinuo.imf.websocket.event.EventBus
+import me.jinuo.imf.websocket.event.EventBusImpl
 import me.jinuo.imf.websocket.factory.RegisterFactory
 import me.jinuo.imf.websocket.handler.DefaultDispatcher
 import me.jinuo.imf.websocket.handler.DefaultWebSocketHandler
@@ -11,6 +13,7 @@ import me.jinuo.imf.websocket.parameter.impl.*
 import me.jinuo.imf.websocket.session.DefaultSessionManager
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar
 import org.springframework.core.type.AnnotationMetadata
@@ -148,5 +151,11 @@ class RegisterConfiguration : ImportBeanDefinitionRegistrar {
             }
         }
     }*/
-
+    /**
+     * 注册事件处理器
+     */
+    @Bean
+    fun registerEventBus():EventBusImpl{
+        return  EventBusImpl()
+    }
 }
